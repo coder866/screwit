@@ -1,5 +1,6 @@
 const mix = require('laravel-mix')
-const path =require("path")
+const path = require("path");
+const browserSync = require("browser-sync").create();
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -10,62 +11,65 @@ const path =require("path")
  | file for the application as well as bundling up all the JS files.
  |
  */
-mix.setPublicPath('public/build')
-mix
-  .js('resources/js/app.js', 'public/js')
-  .webpackConfig({
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'resources/js/src/'),
-        '@themeConfig': path.resolve(__dirname, 'resources/js/themeConfig.js'),
-        '@core': path.resolve(__dirname, 'resources/js/src/@core'),
-        '@validations': path.resolve(__dirname, 'resources/js/src/@core/utils/validations/validations.js'),
-        '@axios': path.resolve(__dirname, 'resources/js/src/libs/axios')
-      }
-    },
-    module: {
-      rules: [
-        {
-          test: /\.s[ac]ss$/i,
-          use: [
-            {
-              loader: 'sass-loader',
-              options: {
-                sassOptions: {
-                  includePaths: ['node_modules', 'resources/js/src/assets']
-                }
-              }
-            }
-          ]
+
+mix.js("resources/js/app.js", "public/js")
+    .webpackConfig({
+        resolve: {
+            alias: {
+                "@": path.resolve(__dirname, "resources/js/src/"),
+                "@themeConfig": path.resolve(
+                    __dirname,
+                    "resources/js/themeConfig.js"
+                ),
+                "@core": path.resolve(__dirname, "resources/js/src/@core"),
+                "@validations": path.resolve(
+                    __dirname,
+                    "resources/js/src/@core/utils/validations/validations.js"
+                ),
+                "@axios": path.resolve(
+                    __dirname,
+                    "resources/js/src/libs/axios"
+                ),
+            },
         },
-        {
-          test: /(\.(png|jpe?g|gif|webp)$|^((?!font).)*\.svg$)/,
-          use: {
-            loader: 'file-loader',
-            options: {
-              name: 'images/[path][name].[ext]',
-              context: '../vuexy-vuejs-bootstrap-vue-template/src/assets/images'
-              //   context: 'frontend/src/assets/images'
-            }
-          }
+        module: {
+            rules: [
+                {
+                    test: /\.s[ac]ss$/i,
+                    use: [
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                sassOptions: {
+                                    includePaths: [
+                                        "node_modules",
+                                        "resources/js/src/assets",
+                                    ],
+                                },
+                            },
+                        },
+                    ],
+                },
+                {
+                    test: /(\.(png|jpe?g|gif|webp)$|^((?!font).)*\.svg$)/,
+                    loaders: {
+                        loader: "file-loader",
+                        options: {
+                            name: "images/[path][name].[ext]",
+                            context:
+                                "../vuexy-vuejs-bootstrap-vue-template/src/assets/images",
+                            //   context: 'frontend/src/assets/images'
+                        },
+                    },
+                },
+            ],
         },
-        // {
-        //   test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/i,
-        //   type: 'asset/resource',
-        //   generator: {
-        //     filename: 'static/[hash][ext]'
-        //     // Original `'filename: 'static/[hash][ext][query]'`
-        //   }
-        // },
-        
-      ]
-    }
-  })
-  .sass('resources/scss/app.scss', 'public/css')
-  .options({
-    postCss: [require('autoprefixer'), require('postcss-rtl')]
-  })
-mix.copy('resources/scss/loader.css', 'public/css')
+    })
+    .sass("resources/scss/app.scss", "public/css")
+    .options({
+        postCss: [require("autoprefixer"), require("postcss-rtl")],
+    });
+mix.copy("resources/scss/loader.css", "public/css");
 
 // ------------------------------------------------
 // If you are deploying on subdomain/subfolder. Uncomment below code before running 'yarn prod' or 'npm run production' command.
@@ -90,7 +94,9 @@ mix.copy('resources/scss/loader.css', 'public/css')
 // ------------------------------------------------
 
 mix.webpackConfig({
-  output: {
-    chunkFilename: 'js/chunks/[name].[chunkhash].js'
-  }
-})
+    output: {
+        chunkFilename: "js/chunks/[name].[chunkhash].js",
+    },
+});
+
+mix.browserSync("screwit.test");
